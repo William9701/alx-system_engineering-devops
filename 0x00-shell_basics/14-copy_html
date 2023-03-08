@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "rsync -u --exclude='*' --include='*'.html . ../"
