@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "rsync -u --exclude='*' --include='*'.html . ../"
+rsync -u --exclude='*' --include='*'.html . ../
