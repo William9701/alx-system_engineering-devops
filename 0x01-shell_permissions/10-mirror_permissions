@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "chmod hello=olleh"
+chmod hello=olleh

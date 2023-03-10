@@ -1,2 +1,2 @@
 #!/bin/basssh
-echo "chown -R if guillaume: hello betty"
+chown -R if guillaume: hello betty
