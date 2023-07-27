@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# This script is displaying the file names after the -
+
+for file in *;
+do
+
+	if [ ! -d "$file" ] && [[ "$file" != .* ]];
+	then
+		after_dash="${file#*-}"
+		echo "$after_dash"
+	fi
+done
+
