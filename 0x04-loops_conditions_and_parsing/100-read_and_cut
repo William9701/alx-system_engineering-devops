@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# This script is displays username, id, home dir.
+
+while IFS=: read -r username _ userid _ home _
+do
+	echo "$username:$userid:$home"
+done < /etc/passwd
