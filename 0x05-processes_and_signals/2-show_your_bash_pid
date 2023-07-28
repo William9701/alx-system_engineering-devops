@@ -3,4 +3,4 @@
 # shellcheck disable=SC2009
 
 
-ps aux | awk 'NR==1 || $11 ~ /bash/'
+ps -aux | grep bash
