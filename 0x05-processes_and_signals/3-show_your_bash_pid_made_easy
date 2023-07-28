@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+
+
+for pid_dir in /proc/[0-9]*; do
+    pid=$(basename "$pid_dir")
+    cmdline=$(tr -d '\0' < "$pid_dir/cmdline")
+    if [[ "$cmdline" == *"bash"* ]]; then
+        echo "$pid $cmdline"
+    fi
+done
