@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-
 # Define the trap actions directly inside the loop
+# Create the file /var/run/myscript.pid containing its PID
+# Display To infinity and beyond indefinitely
+
 trap 'echo "I hate the kill command" && rm /var/run/myscript.pid && exit' SIGTERM
 trap 'echo "Y U no love me?!" && rm /var/run/myscript.pid && exit' SIGINT
 trap 'rm /var/run/myscript.pid && exit' SIGQUIT
 
-# Create the file /var/run/myscript.pid containing its PID
 echo "$$" > /var/run/myscript.pid
 
-# Display To infinity and beyond indefinitely
 while true; do
     echo "To infinity and beyond"
     sleep 2
