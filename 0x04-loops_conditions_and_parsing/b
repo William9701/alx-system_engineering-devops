@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 git add .
-read -p "Enter commit msg sir: " msg
+read -p "Akunne enter commit msg: " msg
 git commit -m "$msg"
 git push
