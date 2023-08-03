@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#Change IP adress of local host and facebook
+
+host="localhost"
+newip="127.0.0.2"
+fhost="facebook.com"
+fnewip="8.8.8.8"
+
+if grep -wq "$host" /etc/hosts; then
+	sed -i "s/^.*$host.*/$newip	$host/" /etc/hosts
+else
+	echo "$newip	$host" >> /etc/hosts
+fi
+
+if grep -wq "$fhost" /etc/hosts; then
+	sed -i "s/^.*$fhost.*/$fnewip	$fhost/" /etc/hosts
+else
+	echo "$fnewip	$fhost" >> /etc/hosts
+fi

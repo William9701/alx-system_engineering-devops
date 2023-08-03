@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#git adds everthing, prompts for commit msg and then pushes.
+
+git add .
+read -e -p "Akunne enter commit msg: " msg
+git commit -m "$msg"
+git push

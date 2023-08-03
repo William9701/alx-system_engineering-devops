@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# To listen over a network
+
+nc -l 98
