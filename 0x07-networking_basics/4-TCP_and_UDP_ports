@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# list active listening sockets
+
+netstat -l
