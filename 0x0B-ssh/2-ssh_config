@@ -1,0 +1,7 @@
+# SSH client configuration
+
+# Use the private key ~/.ssh/school
+Host 52.86.222.148
+    IdentityFile ~/.ssh/school
+    PreferredAuthentications publickey
+    PasswordAuthentication no
