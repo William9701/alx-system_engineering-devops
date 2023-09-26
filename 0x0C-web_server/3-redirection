@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Update package list to get the latest version of packages
+
+sudo apt update
+
+# Install Nginx
+sudo apt install -y nginx
+
+# Create a temporary configuration file with the correct Nginx configuration
+sudo bash -c 'cat > /tmp/nginx_config <<EOF
+server {
+    listen 80;
+    server_name _;
+    root /var/www/html;
+    index index.html;
+    location / {
+        add_header Content-Type "text/html";
+        add_header ETag "your-etag-value";
+        add_header Accept-Ranges "bytes";
+        return 200 "Hello World!\n";
+    }
+    location /redirect_me {
+       return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+}
+}
+EOF'
+
+# Move the temporary configuration file to the Nginx sites-available directory
+sudo mv /tmp/nginx_config /etc/nginx/sites-available/default
+
+# Restart Nginx using the appropriate command (avoiding systemctl)
+sudo service nginx restart
