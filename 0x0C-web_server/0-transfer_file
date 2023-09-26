@@ -25,5 +25,5 @@ fi
 scp_options="-o StrictHostKeyChecking=no"
 
 # Transfer the file using scp
-scp $ssh_key $scp_options "$file_path" "$username@$server_ip:~/"
+scp "$ssh_key" "$scp_options" "$file_path" "$username@$server_ip:~/"
 
