@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Update package list to get the latest version of packages
+sudo apt update
+
+# Install Nginx
+sudo apt install -y nginx
+
+# Configure Nginx to listen on port 80 and serve the Hello World page
+sudo bash -c 'echo -e "server {\n\tlisten 80;\n\tserver_name _;\n\troot /var/www/html;\n\tindex index.html;\n\tlocation / {\n\t\techo \"Hello World!\";\n\t}\n}" > /etc/nginx/sites-available/default'
+
+# Restart Nginx using the appropriate command (avoiding systemctl)
+sudo service nginx restart
+
