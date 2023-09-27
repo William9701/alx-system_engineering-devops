@@ -1,27 +1,4 @@
 #!/usr/bin/env bash
 # to run a Docker file
 
-# Check if a container is using port 8080 and stop/remove it
-EXISTING_CONTAINER=$(docker ps -q --filter "publish=8080")
-if [ -n "$EXISTING_CONTAINER" ]; then
-	  echo "Stopping existing container using port 8080..."
-	    docker stop "$EXISTING_CONTAINER"
-	      echo "Removing existing container using port 8080..."
-	        docker rm "$EXISTING_CONTAINER"
-fi
-
-# Create Dockerfile
-cat > Dockerfile <<EOF
-# Use the official Apache base image
-FROM httpd:latest
-
-# Replace the default Apache index.html with "Hello Holberton"
-RUN echo "Hello Holberton" > /usr/local/apache2/htdocs/index.html
-EOF
-
-# Build Docker image
-docker build -t my_apache_image .
-
-# Run Docker container
-docker run -p 8080:80 -d my_apache_image
-
+sudo service apache2 restart
