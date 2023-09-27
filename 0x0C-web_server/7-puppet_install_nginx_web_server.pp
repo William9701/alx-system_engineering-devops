@@ -1,38 +1,71 @@
-#!/usr/bin/env bash
-# Install Nginx web server (w/ Puppet)
-
-# File: nginx_setup.pp
-
-# Install Nginx package
+#install nginx
 package { 'nginx':
-  ensure => present,
+        ensure          => installed,
+        provider        => 'apt',
+        install_options => ['-y'],
 }
 
-# Configure Nginx
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  content => '
-    server {
-      listen 80;
-      server_name localhost;
+# remove hmtl files
+exec { 'delete html files':
+        command => 'sudo rm -rf *.html',
+        path    => ['/usr/bin', '/usr/sbin', '/usr/bin/env'],
+}
 
-      # Redirect root to a "Hello World!" page with a 301 Moved Permanently
-      location / {
-        return 301 /hello;
-      }
+# start nginx
+exec { 'start nginx':
+        command => 'sudo service nginx start',
+        path    => ['/usr/bin', '/usr/sbin', '/usr/bin/env'],
+}
 
-      location /hello {
-        default_type text/html;
-        return 200 "Hello World!\n";
-      }
+# defautl html content
+file { '/var/www/html/index.html':
+        ensure  => present,
+        content =>
+'Hello World!
+',
+}
+
+# add error 404 file
+file { '/var/www/html/error404.html':
+    ensure  => present,
+    content =>
+'Ceci n\'est pas une page\n
+',
+}
+
+# edit default file
+file { '/etc/nginx/sites-enabled/default':
+        ensure  => present,
+        path    => '/etc/nginx/sites-enabled/default',
+        content =>
+'server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    # 404 error file
+    #error_page 404 /error404.html;
+
+    location / {
+             # First attempt to serve request as file, then
+             # as directory, then fall back to displaying a 404.
+             try_files $uri $uri/ =404;
     }
-  ',
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+',
 }
 
-# Ensure the Nginx service is running and enabled
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => Package['nginx'],
+#restart nginx
+exec { 'restart nginx':
+    command => 'sudo service nginx restart',
+    path    => ['/usr/bin', '/usr/sbin', '/usr/bin/env'],
 }
-
