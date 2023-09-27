@@ -1,23 +1,38 @@
 #!/usr/bin/env bash
-# what can the puppet archive
+# Install Nginx web server (w/ Puppet)
 
-class { 'nginx':
-  listen_port => 80,
+# File: nginx_setup.pp
+
+# Install Nginx package
+package { 'nginx':
+  ensure => present,
 }
 
-nginx::resource::vhost { 'default':
-  www_root => '/var/www/html',
+# Configure Nginx
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => '
+    server {
+      listen 80;
+      server_name localhost;
+
+      # Redirect root to a "Hello World!" page with a 301 Moved Permanently
+      location / {
+        return 301 /hello;
+      }
+
+      location /hello {
+        default_type text/html;
+        return 200 "Hello World!\n";
+      }
+    }
+  ',
 }
 
-nginx::resource::location { '/':
-  location_cfg_append => [
-    'return 200 "Hello World!\n";',
-  ],
-}
-
-nginx::resource::location { '/redirect_me':
-  location_cfg_append => [
-    'return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;',
-  ],
+# Ensure the Nginx service is running and enabled
+service { 'nginx':
+  ensure  => running,
+  enable  => true,
+  require => Package['nginx'],
 }
 
