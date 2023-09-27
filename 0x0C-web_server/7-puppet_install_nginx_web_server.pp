@@ -9,7 +9,7 @@ package { 'nginx':
 
 # Remove HTML files
 exec { 'delete html files':
-  command => 'sudo rm -rf /var/www/html/*.html',
+  command => 'sudo rm -rf *.html',
   path    => ['/usr/bin', '/usr/sbin', '/usr/bin/env'],
 }
 
@@ -34,6 +34,7 @@ file { '/var/www/html/error404.html':
 # Edit the default Nginx configuration
 file { '/etc/nginx/sites-available/default':
   ensure  => present,
+  path    => '/etc/nginx/sites-enabled/default',
   content => "
 server {
     listen 80 default_server;
