@@ -1,4 +1,6 @@
+#!/usr/bin/env bash
 #install nginx
+
 package { 'nginx':
         ensure          => installed,
         provider        => 'apt',
