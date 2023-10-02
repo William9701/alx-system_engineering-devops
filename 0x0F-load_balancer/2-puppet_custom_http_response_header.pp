@@ -1,5 +1,24 @@
-# 2-puppet_custom_http_response_header
+# 2-puppet_custom_http_response_header.pp
 
+# Ensure the package manager's cache is up to date
+exec { 'apt_update':
+  command => '/usr/bin/apt-get update'
+}
+
+# Install Nginx
+package { 'nginx':
+  ensure => installed,
+  require => Exec['apt_update'],
+}
+
+# Start and enable Nginx service
+service { 'nginx':
+  ensure => running,
+  enable => true,
+  require => Package['nginx'],
+}
+
+# Configure Nginx
 class { 'nginx': }
 
 nginx::resource::server { '_':
@@ -29,5 +48,11 @@ nginx::resource::location { '/redirect_me':
   location_custom_cfg => {
     'return' => '301 https://www.youtube.com/watch?v=QH2-TGUlwu4',
   },
+}
+
+# Restart Nginx service after configuration
+exec { 'restart_nginx':
+  command     => '/usr/sbin/service nginx restart',
+  refreshonly => true,
 }
 
