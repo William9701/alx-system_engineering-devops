@@ -32,6 +32,7 @@ sudo mv /tmp/nginx_config /etc/nginx/sites-available/default
 
 # Restart Nginx using the appropriate command (avoiding systemctl)
 sudo service nginx restart
+sudo service nginx stop
 
 # Create a temporary configuration file with the correct HAProxy configuration
 sudo bash -c 'cat > /tmp/haproxy_config <<EOF
