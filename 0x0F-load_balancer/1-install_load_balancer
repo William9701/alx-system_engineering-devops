@@ -1,6 +1,6 @@
- #!/usr/bin/env bash
-
+#!/usr/bin/env bash
 # Update packages
+
 sudo apt-get update
 
 # Install Nginx and HAProxy
