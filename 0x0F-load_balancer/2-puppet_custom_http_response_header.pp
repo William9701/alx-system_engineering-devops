@@ -17,7 +17,7 @@ nginx::resource::location { '/':
       'Content-Type "text/html"',
       'ETag "your-etag-value"',
       'Accept-Ranges "bytes"',
-      'X-Served-By $hostname',
+      'X-Served-By \$hostname',
     ],
     'return' => '200 "Hello World!\n"',
   },
