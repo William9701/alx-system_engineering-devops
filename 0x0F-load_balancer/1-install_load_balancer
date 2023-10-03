@@ -1,61 +1,50 @@
 #!/usr/bin/env bash
-# Update packages
+# Update the system
 
 sudo apt-get update
 
-# Install Nginx and HAProxy
-sudo apt-get install -y nginx haproxy
+# Install HAProxy
+sudo apt-get install -y haproxy
 
+# Enable HAProxy to start at boot
+sudo systemctl enable haproxy
 
-# Create a temporary configuration file with the correct Nginx configuration
-sudo bash -c 'cat > /tmp/nginx_config <<EOF
-server {
-    listen 80;
-    server_name _;
-    root /var/www/html;
-    index index.html;
-    location / {
-        add_header Content-Type "text/html";
-        add_header ETag "your-etag-value";
-        add_header Accept-Ranges "bytes";
-        add_header X-Served-By \$hostname;
-        return 200 "Hello World!\n";
-    }
-    location /redirect_me {
-       return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-}
-}
-EOF'
+# Backup the original configuration file
+sudo mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
 
-# Move the temporary configuration file to the Nginx sites-available directory
-sudo mv /tmp/nginx_config /etc/nginx/sites-available/default
+ha_config="
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
 
-# Restart Nginx using the appropriate command (avoiding systemctl)
-sudo service nginx restart
-sudo service nginx stop
-
-# Create a temporary configuration file with the correct HAProxy configuration
-sudo bash -c 'cat > /tmp/haproxy_config <<EOF
 defaults
-    mode http
-    timeout connect 5000ms
-    timeout client 50000ms
-    timeout server 50000ms
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
 
 frontend http_front
-   bind *:80
-   stats uri /haproxy?stats
-   default_backend http_back
+    bind *:80
+    mode http
+    default_backend http_back
 
 backend http_back
-   balance roundrobin
-   server 350704-web-01 52.86.222.148:80 check
-   server 350704-web-02 3.85.41.223:80 check
-EOF'
+    balance roundrobin
+    server 350704-web-01 52.86.222.148:80 check
+    server 350704-web-02 3.85.41.223:80 check
+"
+echo "$ha_config" | sudo tee /etc/haproxy/haproxy.cfg
 
-# Move the temporary configuration file to the HAProxy directory
-sudo mv /tmp/haproxy_config /etc/haproxy/haproxy.cfg
+sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 
-# Restart HAProxy using the appropriate command (avoiding systemctl)
-sudo service haproxy restart
+sudo systemctl restart haproxy
 
