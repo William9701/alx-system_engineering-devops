@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# domain zone so that the subdomain www points to your load-balancer IP
+
+domain=$1
+subdomain=$2
+
+function display_info {
+    local sub=$1
+    local record_type=$2
+    local destination=$3
+    echo "The subdomain $sub is a $record_type record and points to $destination"
+}
+
+if [[ -z $subdomain ]]; then
+    # Display information for all specified subdomains
+    display_info "www" "A" "100.25.163.133"
+    display_info "lb-01" "A" "100.25.163.133"
+    display_info "web-01" "A" "52.86.222.148"
+    display_info "web-02" "A" "3.85.41.223"
+else
+    # Display information for the specified subdomain
+    case $subdomain in
+        www)
+            display_info "www" "A" "100.25.163.133"
+            ;;
+        lb-01)
+            display_info "lb-01" "A" "100.25.163.133"
+            ;;
+        web-01)
+            display_info "web-01" "A" "52.86.222.148"
+            ;;
+        web-02)
+            display_info "web-02" "A" "3.85.41.223"
+            ;;
+        *)
+            echo "Unknown subdomain: $subdomain"
+            ;;
+    esac
+fi
