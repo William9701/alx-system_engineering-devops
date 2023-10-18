@@ -27,10 +27,9 @@ mysqldump_command+=" --all-databases > ${dump_filename}"
 eval "${mysqldump_command}"
 
 # Check if mysqldump was successful
-if [ $? -ne 0 ]; then
-    echo "MySQL dump failed. Check the MySQL password or the mysqldump command."
-    exit 1
+if ! eval "${mysqldump_command}"; then
+	echo "MySQL dump failed. Check the MySQL password or the mysqldump command."
+	exit 1
 fi
-
 # Create a compressed archive
 tar -czf "${archive_filename}" "${dump_filename}"
