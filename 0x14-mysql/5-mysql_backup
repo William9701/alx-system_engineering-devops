@@ -20,14 +20,7 @@ dump_filename="backup.sql"
 archive_filename="${date_format}.tar.gz"
 
 # MySQL dump command
-mysqldump_command="sudo mysqldump --all-databases"
-
-# Add password to mysqldump command if not empty
-if [ -n "${mysql_password}" ]; then
-    mysqldump_command+=" -p${mysql_password}"
-fi
-
-mysqldump_command+=" > ${dump_filename}"
+mysqldump_command="sudo mysqldump --all-databases -p${mysql_password} > ${dump_filename}"
 
 # Run the MySQL dump command and check if it was successful
 if ! eval "${mysqldump_command}"; then
