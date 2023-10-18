@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Check if script was run with an argument
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <username>"
+    exit 1
+fi
+
+# Run whoami as the specified user
+sudo -u $1 whoami
+
