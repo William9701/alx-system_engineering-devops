@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Check if script was run with an argument
+# Check if script hwas run with an argument
 
 # Run whoami as the specified user
 sudo -u $1 "whoami"
