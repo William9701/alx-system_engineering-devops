@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 # compress the databases into .tgz files
 
-# Set the MySQL root password to empty string
-mysql_password=""
+# Check if password argument is provided
+if [ $# -eq 0 ]; then
+    echo "No arguments supplied. Please provide the MySQL root password."
+    exit 1
+fi
+
+# Set the MySQL root password from the first argument
+mysql_password=$1
 
 # Generate the current date in the desired format
 date_format=$(date +"%d-%m-%Y")
@@ -14,22 +20,21 @@ dump_filename="backup.sql"
 archive_filename="${date_format}.tar.gz"
 
 # MySQL dump command
-mysqldump_command="sudo mysqldump"
+mysqldump_command="sudo mysqldump --all-databases"
 
 # Add password to mysqldump command if not empty
 if [ -n "${mysql_password}" ]; then
     mysqldump_command+=" -p${mysql_password}"
 fi
 
-mysqldump_command+=" --all-databases > ${dump_filename}"
+mysqldump_command+=" > ${dump_filename}"
 
-# Run the MySQL dump command
-eval "${mysqldump_command}"
-
-# Check if mysqldump was successful
+# Run the MySQL dump command and check if it was successful
 if ! eval "${mysqldump_command}"; then
-	echo "MySQL dump failed. Check the MySQL password or the mysqldump command."
-	exit 1
+        echo "MySQL dump failed. Check the MySQL password or the mysqldump command."
+        exit 1
 fi
+
 # Create a compressed archive
 tar -czf "${archive_filename}" "${dump_filename}"
+
