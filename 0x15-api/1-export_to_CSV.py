@@ -13,6 +13,10 @@ base_url = 'https://jsonplaceholder.typicode.com'
 
 if __name__ == "__main__":
 
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <employee_id>")
+        sys.exit(1)
+
     user_id = sys.argv[1]
     user_url = '{}/users?id={}'.format(base_url, user_id)
 
