@@ -1,34 +1,39 @@
 #!/usr/bin/python3
-""" this module is for api"""
-import csv
+
+"""
+Script that returns the todo list of an employee.
+"""
+
+import json
 import requests
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage: python script.py <employee_id>")
-    sys.exit(1)
 
-u_id = int(sys.argv[1])
-USERNAME = ''
-response = requests.get('https://jsonplaceholder.typicode.com/users')
-for loop_1 in response.json():
-    if loop_1['id'] == u_id:
-        USERNAME = (loop_1['username'])
-        break
+base_url = 'https://jsonplaceholder.typicode.com'
 
-feedback = requests.get('https://jsonplaceholder.typicode.com/todos')
+if __name__ == "__main__":
 
-with open(f'{u_id}.csv', 'w', newline='') as csv_file:
-    fieldnames = ['USER_ID', 'USERNAME', 'TASK_COMPLETED_STATUS', 'TASK_TITLE']
-    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-    writer = csv.DictWriter(csv_file, fieldnames=fieldnames, quotechar='"',
-                            quoting=csv.QUOTE_ALL)
+    user_id = sys.argv[1]
+    user_url = '{}/users?id={}'.format(base_url, user_id)
 
-    for todo in feedback.json():
-        if todo['userId'] == u_id:
-            writer.writerow({
-                'USER_ID': int(todo['userId']),
-                'USERNAME': USERNAME,
-                'TASK_COMPLETED_STATUS': todo['completed'],
-                'TASK_TITLE': todo['title']
-            })
+    response = requests.get(user_url)
+    data = response.text
+    data = json.loads(data)
+    user_name = data[0].get('username')
+
+    tasks_url = '{}/todos?userId={}'.format(base_url, user_id)
+
+    response = requests.get(tasks_url)
+    tasks = response.text
+    tasks = json.loads(tasks)
+
+    builder = ""
+    for task in tasks:
+        builder += '"{}","{}","{}","{}"\n'.format(
+            user_id,
+            user_name,
+            task['completed'],
+            task['title']
+        )
+    with open('{}.csv'.format(user_id), 'w', encoding='UTF8') as myFile:
+        myFile.write(builder)

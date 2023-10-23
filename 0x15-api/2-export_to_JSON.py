@@ -1,30 +1,42 @@
 #!/usr/bin/python3
-""" this module is for api"""
+
+"""
+Script that returns the todo list of an employee.
+"""
+
 import json
 import requests
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage: python script.py <employee_id>")
-    sys.exit(1)
 
-u_id = int(sys.argv[1])
-USERNAME = ''
-response = requests.get('https://jsonplaceholder.typicode.com/users')
-for loop_1 in response.json():
-    if loop_1['id'] == u_id:
-        USERNAME = (loop_1['username'])
-        break
+base_url = 'https://jsonplaceholder.typicode.com'
 
-feedback = requests.get('https://jsonplaceholder.typicode.com/todos')
-tasks = []
-for todo in feedback.json():
-    if todo['userId'] == u_id:
-        tasks.append({
-            'task': todo['title'],
-            'completed': todo['completed'],
-            'username': USERNAME
-        })
+if __name__ == "__main__":
 
-with open(f'{u_id}.json', 'w') as json_file:
-    json.dump({f'{u_id}': tasks}, json_file)
+    user_id = sys.argv[1]
+    user_url = '{}/users?id={}'.format(base_url, user_id)
+
+    response = requests.get(user_url)
+    m_data = response.text
+    m_data = json.loads(m_data)
+    user_name = m_data[0].get('username')
+
+    tasks_url = '{}/todos?userId={}'.format(base_url, user_id)
+
+    response = requests.get(tasks_url)
+    tasks = response.text
+    tasks = json.loads(tasks)
+
+    dict_key = str(user_id)
+
+    builder = {dict_key: []}
+    for task in tasks:
+        json_data = {
+            "task": task['title'],
+            "completed": task['completed'],
+            "username": user_name
+        }
+        builder[dict_key].append(json_data)
+    json_encoded_data = json.dumps(builder)
+    with open('{}.json'.format(user_id), 'w', encoding='UTF8') as myFile:
+        myFile.write(json_encoded_data)
