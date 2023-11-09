@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """ This is an andvanced api setup """
 
+import requests
 from collections import Counter
 import re
-import requests
 
 
 def count_words(subreddit, word_list, after=None, word_count=None):
