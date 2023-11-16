@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Replace 'myproject' with the name of your Gunicorn systemd service
+SERVICE_NAME="gunicorn.service"
+
+# Reload the Gunicorn service
+sudo systemctl reload $SERVICE_NAME
+
+# Check the status of the service
+sudo systemctl status $SERVICE_NAME
+
